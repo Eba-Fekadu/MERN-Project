@@ -23,3 +23,13 @@ app.listen(3000, () => {
 });
 
 app.use('/server/song', songRouter);
+
+app.use((err, req, res, next) => {
+    const statusCode = err.statusCode || 500;
+    const message = err.message || 'Internal Server Error';
+    return res.status(statusConde).json({
+        success: false,
+        statusCode,
+        message,
+    });
+});

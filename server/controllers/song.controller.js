@@ -1,6 +1,6 @@
 import Song from '../models/song.model.js';
 
-export const create = async (req,res)=>{
+export const create = async (req,res, next)=>{
     // res.json({
     //     message: 'Hello World from Controller!',
     // });
@@ -10,6 +10,6 @@ export const create = async (req,res)=>{
     await newSong.save();
     res.status(201).json('Song Created Successfully!');
    } catch(error){
-    res.status(500).json(error.message);
+   next(error);
    }
 };
