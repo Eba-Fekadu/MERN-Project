@@ -8,6 +8,12 @@ interface AdminProps {
   // For example:
   // title: string;
 }
+interface FormData {
+  Title: string;
+  Artist: string;
+  Album: string;
+  Genre: string;
+}
 const inputStyles = css`
   
   display:flex;
@@ -47,11 +53,63 @@ const inputStyles = css`
 
 export default function Admin({ /* destructure props if any */ }: AdminProps): ReactElement {
 
-  const [inputValue, setInputValue] = useState('');
+  const [formData, setFormData] = useState<FormData>({
+    Title: '',
+    Artist: '',
+    Album: '',
+    Genre: '',
+  });
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value);
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
   };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try{
+      setLoading(true);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      const res = await fetch('/server/song/create', {
+        method: 'POST',
+        headers:{
+          'Content-Type': 'application/json',      
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if(data.success === false) {
+        setError(data.message);
+        setLoading(false);
+        return;
+      }
+     
+      
+      setFormData({
+        ...formData,
+        Title: '',
+        Artist: '',
+        Album: '', 
+        Genre: '',
+      });
+      setLoading(false);
+      console.log(data);
+      setError(null);
+      // navigate('/admin', { state: { formData } });
+      setSuccess(data);
+    
+    } catch(error){
+      setLoading(false);
+      setError(error.message);
+      setSuccess(null);
+    }
+  };
+
+  console.log(formData);
   return (
     <div className='w-24 sm:w-64'>
       
@@ -59,16 +117,19 @@ export default function Admin({ /* destructure props if any */ }: AdminProps): R
         fontSize={[ 3, 4, 5 ]}
         fontWeight='bold'
         color='#606873'>
-        Make Changes
+        Add Song
       </Text>
-     
-      
+      {success && <p style={{ color: 'green' }}>{success}</p>}
+      <form onSubmit={handleSubmit}>
       <label>Title:</label>
       <input
             type='text'
             css={inputStyles}
              placeholder='Title'
             className='bg-transparent focus:outline-none w-24 sm:w-64'
+            id ='Title'
+            value={formData.Title}
+            onChange={handleChange}
           />
 
           <label>Artist:</label>
@@ -77,6 +138,9 @@ export default function Admin({ /* destructure props if any */ }: AdminProps): R
             css={inputStyles}
             placeholder='Artist'
             className='bg-transparent focus:outline-none w-24 sm:w-64'
+            id ='Artist'
+            value={formData.Artist}
+            onChange={handleChange}
           />
 
 <label>Album:</label>
@@ -85,6 +149,9 @@ export default function Admin({ /* destructure props if any */ }: AdminProps): R
             css={inputStyles}
             placeholder='Album'
             className='bg-transparent focus:outline-none w-24 sm:w-64'
+            id ='Album'
+            value={formData.Album}
+            onChange={handleChange}
           />
 
 <label>Genre:</label>
@@ -93,15 +160,24 @@ export default function Admin({ /* destructure props if any */ }: AdminProps): R
             css={inputStyles}
             placeholder='Genre'
             className='bg-transparent focus:outline-none w-24 sm:w-64'
+            id ='Genre'
+            value={formData.Genre}
+            onChange={handleChange}
           />
-        <Button bg='#606873'>Button</Button>
-         
+        <Button disabled={loading} bg='#606873'>{loading ? 'Loading...' : 'Add'}</Button>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        </form>
 
       <Box width={256}>
-    <Card
-      p={1}
-      borderRadius={2}
-      boxShadow='0 0 16px rgba(0, 0, 0, .25)'
+
+     <Card
+      // p={3}
+      
+      // width={[ 1, 1, 1/2 ]}
+      // mx={4}
+      // my={4}
+      // bg='#606873'
+      // boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1)'
       >
       <Image src={GallaxyImage} />
       <Box px={2}>
