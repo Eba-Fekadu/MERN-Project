@@ -24,3 +24,18 @@ res.status(200).json(listing);
     next(error);
 }
 };
+
+export const deleteSong = async(req, res, next) => {
+    const listing = await Song.findById(req.params.id);
+    // if(!listing){
+    //     return next('Listing not found');
+    // }
+    try{
+        await Song.findByIdAndDelete(req.params.id);
+        res.status(200).json('Song has been deleted');
+    }
+    catch(error){
+
+        next(error);
+    }
+}

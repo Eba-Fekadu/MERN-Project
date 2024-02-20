@@ -160,6 +160,41 @@ const handleShowListings = async() =>{
   }
 }
   console.log(formData);
+  
+  const handleSongDelete = async (songId: string) => {
+    try {
+      // Display a confirmation dialog before proceeding with deletion
+      const userConfirmed = window.confirm('Are you sure you want to delete this song?');
+      
+      if (!userConfirmed) {
+        // User canceled the deletion
+        return;
+      }
+  
+      const response = await fetch(`server/song/delete/${songId}`, {
+        method: 'DELETE',
+      });
+  
+      // Check if the response is successful (status code in the range 200-299)
+      if (!response.ok) {
+        const dataError = await response.json();
+        console.log(dataError.message);
+        return;
+      }
+  
+      const data: { success: boolean, message?: string } = await response.json();
+  
+      if (data.success === false) {
+        console.log(data.message);
+        return;
+      }
+  
+      setSongListing((prev) => prev.filter((song) => song._id !== songId));
+    } catch (error) {
+      console.log((error as Error).message);
+    }
+  };
+  
   const onPageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -262,11 +297,11 @@ const handleShowListings = async() =>{
                   Genre: {song.Genre}
                 </Text>
                 <Flex>
-                <Button variant="outline" color="white" m={1} bg='red' sx={{ ':hover': { backgroundColor: '#e35a5a', color: 'white' } }}>
-                <FiTrash2 style={{  fontSize: [8, 10, 12] }}/>  Delete
+                <Button onClick={()=>handleSongDelete(song._id)} variant="outline" color="white" m={1} bg='red' sx={{ ':hover': { backgroundColor: '#e35a5a', color: 'white' } }}>
+                <FiTrash2 style={{  fontSize: [8, 10, 12] }}/> Delete
       </Button>
       <Button variant="outline" color="white" m={1} bg='green'  sx={{ ':hover': { backgroundColor: '#00c300', color: 'white' } }}>
-        <FiEdit2 style={{  fontSize: [8, 10, 12]}}/>Edit
+        <FiEdit2 style={{  fontSize: [8, 10, 12]}}/> Edit
       </Button>
                 </Flex>
               </Box>
