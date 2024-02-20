@@ -8,6 +8,7 @@ import {createStart, createSuccess, createFailure} from '../redux/song/songSlice
 import { RootState } from '../redux/store';
 import Pagination from '../component/Pagination.tsx';
 import { FiTrash2, FiEdit2 } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 interface AdminProps {
   // Add any props that the Admin component may receive
   // For example:
@@ -73,10 +74,12 @@ export default function Admin({ /* destructure props if any */ }: AdminProps): R
   const [showListingError, setShowListingError] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const { loading, error } = useSelector((state: RootState) => state.songs);
+  const [updateData, setUpdateData] = useState('');
+  const [isUpdateMode, setIsUpdateMode] = useState(false);
   // const [showListings, setShowListings] = useState(false);
   // const { loading, error } = useSelector((state: StateType) => state.song);
   const [success, setSuccess] = useState<string | null>(null);
-
+  const navigate = useNavigate();
   // useEffect(() => {
   //   if (showListings) {
   //     handleShowListings();
@@ -84,6 +87,7 @@ export default function Admin({ /* destructure props if any */ }: AdminProps): R
   // }, [showListings]);
   useEffect(() => {
     handleShowListings();
+
   }, []); 
   const dispatch = useDispatch();
 
@@ -91,6 +95,16 @@ export default function Admin({ /* destructure props if any */ }: AdminProps): R
     setFormData({
       ...formData,
       [e.target.id]: e.target.value,
+    });
+  };
+  const handleReturn = () => {
+    setIsUpdateMode(false);
+    setFormData({
+      ...formData,
+      Title: '',
+      Artist: '',
+      Album: '', 
+      Genre: '',
     });
   };
   const handleSubmit = async (e: React.FormEvent) => {
@@ -126,6 +140,7 @@ export default function Admin({ /* destructure props if any */ }: AdminProps): R
       // setError(null);
       dispatch(createSuccess(data));
       // navigate('/admin', { state: { formData } });
+   
       setSuccess(data);
       console.log(data);
       handleShowListings();
@@ -144,23 +159,7 @@ export default function Admin({ /* destructure props if any */ }: AdminProps): R
       // setSuccess(null);
     }
   };
-const handleShowListings = async() =>{
-  try {
-    setShowListingError(false);
-    const res = await fetch('/server/song/listings');
-    const data = await res.json();
-    if(data.success === false){
-      setShowListingError(true);
-      return;
-    }
 
-      setSongListing(data);
-  } catch(error){
-    setShowListingError(true);
-  }
-}
-  console.log(formData);
-  
   const handleSongDelete = async (songId: string) => {
     try {
       // Display a confirmation dialog before proceeding with deletion
@@ -194,30 +193,124 @@ const handleShowListings = async() =>{
       console.log((error as Error).message);
     }
   };
+//  let tobeUpdatedId = '';
+  const handleSongUpdate = async (songId: string) => {
+    setIsUpdateMode(true);
+    // const songId = params.songId;
+    const response = await fetch(`/server/song/get/${songId}`);
+    const data = await response.json();
+    if(data.success === false){
+      console.log(data.message);
+      return;
+    }
+    setFormData(data);
+    setUpdateData(songId);
+    // tobeUpdatedId = songId;
+    // params.songId = songId;
+    // handleUpdate(songId);
+} 
+
+  const handleUpdate = async (e: React.FormEvent ) => {
+    e.preventDefault();
+    try{
+      // setLoading(true);
+      dispatch(createStart());
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      const res = await fetch(`/server/song/update/${updateData}`, {
+        method: 'POST',
+        headers:{
+          'Content-Type': 'application/json',      
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if(data.success === false) {
+
+        dispatch(createFailure(data.message));
+        return;
+      }
+
+      setFormData({
+        ...formData,
+        Title: '',
+        Artist: '',
+        Album: '', 
+        Genre: '',
+      });
+
+      dispatch(createSuccess(data));
+      // setSuccess(data);
+      // console.log(data);
+      
+       handleShowListings();
+       setIsUpdateMode(false);
+      navigate('/admin', { state: { formData } });
+    
+    } catch(error){
+      if (error instanceof Error) {
+        dispatch(createFailure(error.message));
+        setSuccess(null);
+      } else {
+        console.error('Unexpected error:', error);
+      }
   
-  const onPageChange = (page: number) => {
+    }
+  };
+  const handleShowListings = async() =>{
+    try {
+      setShowListingError(false);
+      const res = await fetch('/server/song/listings');
+      const data = await res.json();
+      if(data.success === false){
+        setShowListingError(true);
+        return;
+      }
+  
+        setSongListing(data);
+    } catch(error){
+      setShowListingError(true);
+    }
+  }
+    console.log(formData);
+  
+    const onPageChange = (page: number) => {
     setCurrentPage(page);
   };
 
   const paginatedSongs = songListing.slice((currentPage - 1) * 6, currentPage * 6);
+
   return (
     <div>
       <Flex  flexDirection={['column', 'row']}>
       {/* <Box width={[1, 1 / 3]} p={3} m={3} sx={{ borderRight: '1px solid #606873' }}>*/}
       <Box width={[1, 1 / 3]} p={4} m={3} sx={{ borderRight: '2px solid #cbd5e0' }}> 
+
+          {isUpdateMode ? (
+
+<Text 
+fontSize={[ 3, 4, 5 ]}
+fontWeight='bold'
+color='#606873'>
+Update Song
+</Text>
+ ) : (
       <Text 
         fontSize={[ 3, 4, 5 ]}
         fontWeight='bold'
         color='#606873'>
         Add Song
       </Text>
+ )}
+     
+
       {success && <p style={{ color: 'green' }}>{success}</p>}
-      <form onSubmit={handleSubmit}>
+      {/* <form onSubmit={handleSubmit}> */}
+      <form onSubmit={isUpdateMode ? handleUpdate : handleSubmit}>
       <label>Title:</label>
       <input
             type='text'
             css={inputStyles}
-             placeholder='Title'
+             placeholder='title'
             className='bg-transparent focus:outline-none w-24 sm:w-64'
             id ='Title'
             value={formData.Title}
@@ -228,7 +321,7 @@ const handleShowListings = async() =>{
       <input
             type='text'
             css={inputStyles}
-            placeholder='Artist'
+            placeholder='artist'
             className='bg-transparent focus:outline-none w-24 sm:w-64'
             id ='Artist'
             value={formData.Artist}
@@ -239,7 +332,7 @@ const handleShowListings = async() =>{
       <input
             type='text'
             css={inputStyles}
-            placeholder='Album'
+            placeholder='album'
             className='bg-transparent focus:outline-none w-24 sm:w-64'
             id ='Album'
             value={formData.Album}
@@ -250,13 +343,22 @@ const handleShowListings = async() =>{
       <input
             type='text'
             css={inputStyles}
-            placeholder='Genre'
+            placeholder='genre'
             className='bg-transparent focus:outline-none w-24 sm:w-64'
             id ='Genre'
             value={formData.Genre}
             onChange={handleChange}
           />
-        <Button disabled={loading} bg='#606873'>{loading ? 'Loading...' : 'Add'}</Button>
+          
+       
+        {isUpdateMode ? (
+        <Button type="submit" disabled={loading} bg='#606873'>{loading ? 'Loading...' : 'Update'}</Button>
+        ) : (
+          <Button type="submit"  disabled={loading} bg='#606873'>{loading ? 'Loading...' : 'Add'}</Button>
+          )}
+           {isUpdateMode ? (
+          <Button onClick={handleReturn}  mt={2} bg='#606873' sx={{ display: 'block' }}>Return to Add</Button>
+          ) : ( ''  )}
         {error && <p style={{ color: 'red' }}>{error}</p>}
         </form>
 
@@ -300,7 +402,7 @@ const handleShowListings = async() =>{
                 <Button onClick={()=>handleSongDelete(song._id)} variant="outline" color="white" m={1} bg='red' sx={{ ':hover': { backgroundColor: '#e35a5a', color: 'white' } }}>
                 <FiTrash2 style={{  fontSize: [8, 10, 12] }}/> Delete
       </Button>
-      <Button variant="outline" color="white" m={1} bg='green'  sx={{ ':hover': { backgroundColor: '#00c300', color: 'white' } }}>
+      <Button onClick={()=>handleSongUpdate(song._id)} variant="outline" color="white" m={1} bg='green'  sx={{ ':hover': { backgroundColor: '#00c300', color: 'white' } }}>
         <FiEdit2 style={{  fontSize: [8, 10, 12]}}/> Edit
       </Button>
                 </Flex>
