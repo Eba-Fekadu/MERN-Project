@@ -13,3 +13,14 @@ export const create = async (req,res, next)=>{
    next(error);
    }
 };
+// export const updateSong = async (req, res,next) => {
+
+// }
+export const getSongs = async (req, res,next) => {
+try{
+const listing = await Song.find(req.body).sort({ createdAt: -1 });
+res.status(200).json(listing);
+}catch(error){
+    next(error);
+}
+};

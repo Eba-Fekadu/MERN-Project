@@ -1,8 +1,13 @@
 /** @jsxImportSource @emotion/react */
-import React, { ReactElement, ChangeEvent, useState } from 'react';
+import React, { ReactElement, ChangeEvent, useState, useEffect } from 'react';
 import { css } from '@emotion/react';
-import { Button, Box, Card, Image, Heading, Text } from 'rebass';
-import GallaxyImage from '../assets/music-man.jpg'
+import { Button, Box,Flex, Card, Image, Heading, Text } from 'rebass';
+import GallaxyImage from '../assets/music-man.jpg';
+import { useSelector, useDispatch } from 'react-redux';
+import {createStart, createSuccess, createFailure} from '../redux/song/songSlice';
+import { RootState } from '../redux/store';
+import Pagination from '../component/Pagination.tsx';
+import { FiTrash2, FiEdit2 } from 'react-icons/fi';
 interface AdminProps {
   // Add any props that the Admin component may receive
   // For example:
@@ -14,6 +19,7 @@ interface FormData {
   Album: string;
   Genre: string;
 }
+
 const inputStyles = css`
   
   display:flex;
@@ -42,7 +48,8 @@ const inputStyles = css`
     padding: 8px;
   }
 `;
-`;
+
+
 
 
 // const columnStyles = css`
@@ -59,9 +66,26 @@ export default function Admin({ /* destructure props if any */ }: AdminProps): R
     Album: '',
     Genre: '',
   });
-  const [error, setError] = useState<string | null>(null);
+  
+  // const [error, setError] = useState<string | null>(null);
+  // const [loading, setLoading] = useState(false);
+  const [songListing, setSongListing] = useState([]);
+  const [showListingError, setShowListingError] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const { loading, error } = useSelector((state: RootState) => state.songs);
+  // const [showListings, setShowListings] = useState(false);
+  // const { loading, error } = useSelector((state: StateType) => state.song);
   const [success, setSuccess] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+
+  // useEffect(() => {
+  //   if (showListings) {
+  //     handleShowListings();
+  //   }
+  // }, [showListings]);
+  useEffect(() => {
+    handleShowListings();
+  }, []); 
+  const dispatch = useDispatch();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -72,7 +96,8 @@ export default function Admin({ /* destructure props if any */ }: AdminProps): R
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try{
-      setLoading(true);
+      // setLoading(true);
+      dispatch(createStart());
       await new Promise(resolve => setTimeout(resolve, 1000));
       const res = await fetch('/server/song/create', {
         method: 'POST',
@@ -83,8 +108,9 @@ export default function Admin({ /* destructure props if any */ }: AdminProps): R
       });
       const data = await res.json();
       if(data.success === false) {
-        setError(data.message);
-        setLoading(false);
+        // setError(data.message);
+        // setLoading(false);
+        dispatch(createFailure(data.message));
         return;
       }
      
@@ -96,23 +122,54 @@ export default function Admin({ /* destructure props if any */ }: AdminProps): R
         Album: '', 
         Genre: '',
       });
-      setLoading(false);
-      console.log(data);
-      setError(null);
+      // setLoading(false);
+      // setError(null);
+      dispatch(createSuccess(data));
       // navigate('/admin', { state: { formData } });
       setSuccess(data);
+      console.log(data);
+      handleShowListings();
     
     } catch(error){
-      setLoading(false);
-      setError(error.message);
-      setSuccess(null);
+      if (error instanceof Error) {
+        dispatch(createFailure(error.message));
+        setSuccess(null);
+      } else {
+        // Handle other types of errors
+        console.error('Unexpected error:', error);
+      }
+      // dispatch(createFailure(error.message));
+      // // setLoading(false);
+      // // setError(error.message);
+      // setSuccess(null);
     }
   };
+const handleShowListings = async() =>{
+  try {
+    setShowListingError(false);
+    const res = await fetch('/server/song/listings');
+    const data = await res.json();
+    if(data.success === false){
+      setShowListingError(true);
+      return;
+    }
 
+      setSongListing(data);
+  } catch(error){
+    setShowListingError(true);
+  }
+}
   console.log(formData);
+  const onPageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const paginatedSongs = songListing.slice((currentPage - 1) * 6, currentPage * 6);
   return (
-    <div className='w-24 sm:w-64'>
-      
+    <div>
+      <Flex  flexDirection={['column', 'row']}>
+      {/* <Box width={[1, 1 / 3]} p={3} m={3} sx={{ borderRight: '1px solid #606873' }}>*/}
+      <Box width={[1, 1 / 3]} p={4} m={3} sx={{ borderRight: '2px solid #cbd5e0' }}> 
       <Text 
         fontSize={[ 3, 4, 5 ]}
         fontWeight='bold'
@@ -168,28 +225,62 @@ export default function Admin({ /* destructure props if any */ }: AdminProps): R
         {error && <p style={{ color: 'red' }}>{error}</p>}
         </form>
 
-      <Box width={256}>
-
-     <Card
-      // p={3}
-      
-      // width={[ 1, 1, 1/2 ]}
-      // mx={4}
-      // my={4}
-      // bg='#606873'
-      // boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-      >
-      <Image src={GallaxyImage} />
-      <Box px={2}>
-        <Heading as='h3'>
-          Card
-        </Heading>
-        <Text fontSize={0}>
-          Small meta text
-        </Text>
+        {/* <button onClick={handleShowListings}>
+        Show Listings
+      </button> */}
       </Box>
-    </Card>
-  </Box>
+      <Box width={[1, 2 / 3]} p={3} sx={{ alignItems: ['center', 'flex-start'] }}>
+<p>{showListingError ? 'Error showing song listings': ''}</p>
+{/* <Flex flexWrap="wrap" justifyContent="space-between">
+        {paginatedSongs.map((song) => ( */}
+<Flex flexWrap="wrap" justifyContent="flex-start">
+      {songListing.length > 0 &&
+        paginatedSongs.map((song) => (
+          
+          <Box p={3} key={song._id}>
+            
+            <Card
+            
+  sx={{
+    
+    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.2)', // Red-colored shadow
+    borderRadius: 8,
+    overflow: 'hidden',
+  }}>
+              <Image src={GallaxyImage}/>
+              <Box px={2}>
+                <Heading as="h3"  mb={2} fontSize={[2, 3, 4]}>
+                  {song.Title}
+                </Heading>
+                <Text fontSize={[0, 1, 2]} mb={2}>
+                  Artist: {song.Artist}
+                </Text>
+                <Text fontSize={[0, 1, 2]} mb={2}>
+                  Album: {song.Album}
+                </Text>
+                <Text fontSize={[0, 1, 2]} mb={2}>
+                  Genre: {song.Genre}
+                </Text>
+                <Flex>
+                <Button variant="outline" color="white" m={1} bg='red' sx={{ ':hover': { backgroundColor: '#e35a5a', color: 'white' } }}>
+                <FiTrash2 style={{  fontSize: [8, 10, 12] }}/>  Delete
+      </Button>
+      <Button variant="outline" color="white" m={1} bg='green'  sx={{ ':hover': { backgroundColor: '#00c300', color: 'white' } }}>
+        <FiEdit2 style={{  fontSize: [8, 10, 12]}}/>Edit
+      </Button>
+                </Flex>
+              </Box>
+            </Card>
+             
+          </Box>
+          
+        ))}
+    </Flex>
+    {/* ))}
+    </Flex> */}
+    <Pagination totalItems={songListing.length} onPageChange={onPageChange} />
+    </Box>
+    </Flex>
     </div>
     
   );
