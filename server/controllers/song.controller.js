@@ -67,3 +67,16 @@ export const getSong = async (req, res, next) => {
     }
 };
 
+export const getSearch = async (req, res, next) => {
+    try{
+        const limit = parseInt(req.query.limit) || 9;
+        const startIndex = parseInt(req.query.startIndex) || 0;
+        // const listing = await Song.findById(req.params.id);
+        // res.status(200).json(listing);
+    }
+    catch(error){
+        next(error);
+    }
+};
+
+
