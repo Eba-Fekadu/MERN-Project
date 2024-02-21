@@ -4,12 +4,14 @@ import { css } from '@emotion/react';
 import { Button, Box,Flex, Card, Image, Heading, Text } from 'rebass';
 import GallaxyImage from '../assets/music-man.jpg';
 import { useSelector, useDispatch } from 'react-redux';
-import {createStart, createSuccess, createFailure} from '../redux/song/songSlice';
-import { RootState } from '../redux/store';
+import {createStart, createSuccess, createFailure} from '../redux/song/songSlice.ts';
+import { RootState } from '../redux/store.ts';
 import Pagination from '../component/Pagination.tsx';
 import { FiTrash2, FiEdit2 } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
-interface AdminProps {
+import SongLogo from '../assets/SongLogo(2).png';
+
+interface SettingProps {
   // Add any props that the Admin component may receive
   // For example:
   // title: string;
@@ -32,14 +34,15 @@ interface FormData {
 }
 
 const inputStyles = css`
-  
+background-color: rgba(54, 69, 79, 0.4);
   display:flex;
   padding: 10px;
   margin: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #333;
   border-radius: 5px;
   font-size: 16px;
   box-sizing: border-box;
+  color: #fff; 
   transition: border-color 0.3s ease-in-out;
 
   &:focus {
@@ -69,7 +72,7 @@ const inputStyles = css`
 //   padding: 0.75rem 1rem; /* Adjust padding as needed */
 // `;
 
-export default function Admin({ /* destructure props if any */ }: AdminProps): ReactElement {
+export default function Setting({ /* destructure props if any */ }: SettingProps): ReactElement {
 
   const [formData, setFormData] = useState<FormData>({
     Title: '',
@@ -254,7 +257,7 @@ export default function Admin({ /* destructure props if any */ }: AdminProps): R
       
        handleShowListings();
        setIsUpdateMode(false);
-      navigate('/admin', { state: { formData } });
+      navigate('/setting', { state: { formData } });
     
     } catch(error){
       if (error instanceof Error) {
@@ -293,22 +296,25 @@ export default function Admin({ /* destructure props if any */ }: AdminProps): R
     <div>
       <Flex  flexDirection={['column', 'row']}>
       {/* <Box width={[1, 1 / 3]} p={3} m={3} sx={{ borderRight: '1px solid #606873' }}>*/}
-      <Box width={[1, 1 / 3]} p={4} m={3} sx={{ borderRight: '2px solid #cbd5e0' }}> 
+      <Box width={[1, 1 / 3]} p={4} m={3} sx={{ borderRight: '4px solid  rgba(54, 69, 79, 0.4)' }}> 
 
           {isUpdateMode ? (
 
 <Text 
 fontSize={[ 3, 4, 5 ]}
 fontWeight='bold'
+mb={4}
 color='#606873'>
-Update Song
+UPDATE SONG
 </Text>
  ) : (
       <Text 
         fontSize={[ 3, 4, 5 ]}
         fontWeight='bold'
+        mb={4}
+        
         color='#606873'>
-        Add Song
+        ADD SONG
       </Text>
  )}
      
@@ -362,9 +368,9 @@ Update Song
           
        
         {isUpdateMode ? (
-        <Button type="submit" disabled={loading} bg='#606873'>{loading ? 'Loading...' : 'Update'}</Button>
+        <Button type="submit" disabled={loading} my={3} bg='#606873'>{loading ? 'Loading...' : 'Update'}</Button>
         ) : (
-          <Button type="submit"  disabled={loading} bg='#606873'>{loading ? 'Loading...' : 'Add'}</Button>
+          <Button type="submit"  disabled={loading} mt={3} bg='#606873'>{loading ? 'Loading...' : 'Add'}</Button>
           )}
            {isUpdateMode ? (
           <Button onClick={handleReturn}  mt={2} bg='#606873' sx={{ display: 'block' }}>Return to Add</Button>
@@ -390,31 +396,33 @@ Update Song
             
   sx={{
     
-    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.2)', // Red-colored shadow
+    boxShadow: '0 4px 8px 1px rgba(0, 0, 0, 0.8)',
+    backgroundColor: 'rgba(54, 69, 79, 0.3)',
     borderRadius: 8,
     overflow: 'hidden',
   }}>
-              <Image src={GallaxyImage} width={[1]}/>
+              <Image src={SongLogo} width={[1]}/>
               <Box px={2}>
-                <Heading as="h3"  mb={2} fontSize={[2, 3, 4]}>
-                  {song.Title}
-                </Heading>
                 <Text fontSize={[0, 1, 2]} mb={2}>
-                  Artist: {song.Artist}
+                 Title:    <span style={{ color: 'rgba(255, 255, 255, 0.4)' }}>{song.Title}</span>
                 </Text>
                 <Text fontSize={[0, 1, 2]} mb={2}>
-                  Album: {song.Album}
+               Artist:  <span style={{ color: 'rgba(255, 255, 255, 0.4)' }}>{song.Artist}</span>
                 </Text>
                 <Text fontSize={[0, 1, 2]} mb={2}>
-                  Genre: {song.Genre}
+                Album: <span style={{ color: 'rgba(255, 255, 255, 0.4)' }}>{song.Album}</span>
+                </Text>
+                <Text fontSize={[0, 1, 2]} mb={2}>
+               Genre: <span style={{ color: 'rgba(255, 255, 255, 0.4)' }}>  {song.Genre}</span> 
                 </Text>
                 <Flex>
-                <Button onClick={()=>handleSongDelete(song._id)} variant="outline" color="white" m={1} bg='red' sx={{ ':hover': { backgroundColor: '#e35a5a', color: 'white' } }}>
-                {/* <FiTrash2 style={{  fontSize: [8, 10, 12] }}/>*/} <FiTrash2 />Delete 
-      </Button>
-      <Button onClick={()=>handleSongUpdate(song._id)} variant="outline" color="white" m={1} bg='green'  sx={{ ':hover': { backgroundColor: '#00c300', color: 'white' } }}>
-        <FiEdit2/> Edit
-      </Button>
+                <Button onClick={() => handleSongDelete(song._id)} variant="outline" color="white" m={1} bg='black' sx={{ ':hover': { backgroundColor: '#333', color: 'white' } }}>
+  <FiTrash2 /> Delete
+</Button>
+
+<Button onClick={() => handleSongUpdate(song._id)} variant="outline" color="white" m={1} bg='black' sx={{ ':hover': { backgroundColor: '#555', color: 'white' } }}>
+  <FiEdit2 /> Edit
+</Button>
                 </Flex>
               </Box>
             </Card>

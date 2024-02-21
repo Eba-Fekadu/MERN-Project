@@ -1,7 +1,6 @@
 import { ReactElement, useState, useEffect } from 'react';
 import { Box,Flex, Card, Image, Heading, Text } from 'rebass';
-import GallaxyImage from '../assets/music-man.jpg';
-
+import SongLogo from '../assets/SongLogo(2).png';
 import Pagination from '../component/Pagination.tsx';
 
 
@@ -56,8 +55,9 @@ export default function list({ /* destructure props if any */ }: listProps): Rea
 <p>{showListingError ? 'Error showing song listings': ''}</p>
 {/* <Flex flexWrap="wrap" justifyContent="space-between">
       {paginatedSongs.map((song) => ( */}
-      <Text fontSize={5} fontWeight="bold" p={3} mb={0}sx={{ borderBottom: '1px solid #ccc' }}>
-    Song Lists
+      {/* <Text fontSize={5} fontWeight="bold" p={3} mb={0}sx={{ borderBottom: '1px solid #ccc' }}> */}
+      <Text fontSize={5} fontWeight="bold" p={3} mb={0} color={'#606873'}>
+    SONG LISTS
   </Text>
 <Flex flexWrap="wrap" justifyContent="flex-start">
   
@@ -78,16 +78,16 @@ sx={{
   overflow: 'hidden',
   
 }}>
-            <Image src={GallaxyImage} width={[1]}/>
+            <Image src={SongLogo} width={[1]}/>
             <Box px={2}>
-              <Heading as="h3"  mb={3} px={2} fontSize={[1, 2, 3]}>
+              <Heading as="h3"   px={2} fontSize={[2, 3, 4]}>
                 {song.Title}
               </Heading>
-              <Text fontSize={[0, 0, 1]} px={2}>
+              <Text fontSize={[0, 0, 1]} px={2} mb={3}>
                {song.Artist}
               </Text>
               <Text fontSize={[0, 0, 1]} mb={2} px={2}>
-                {song.Album}, {song.Genre}
+                {song.Album} :     {song.Genre}
               </Text>
               {/* <Text fontSize={[0, 0, 1]} mb={2} px={2}>
               

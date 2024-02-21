@@ -24,16 +24,15 @@ const AlbumCounts: React.FC = () => {
         <Heading  
           fontSize={4} 
           mb={3}
-          textAlign={'center'}
-          color="red"
+          color='#606873'
           fontFamily="Montserrat, sans-serif" 
           fontWeight="bold" 
           letterSpacing="0.05em">
-         Songs & Albums for an Artist
+         ARTISTS SONGS & ALBUMS
         </Heading>
         {genreCounts.map((item, index) => (
-          <Box key={index} mb={3} sx={{ borderBottom: '1px solid #ccc' }}>
-            <Text fontSize={3} fontWeight="bold">
+          <Box key={index} mb={3} sx={{ borderBottom: '1px solid #606873' }}>
+            <Text fontSize={3} mb={2} fontWeight="bold">
               {item.artist}
             </Text>
             <Text fontSize={2}>

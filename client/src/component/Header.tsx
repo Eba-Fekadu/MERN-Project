@@ -2,13 +2,20 @@
 import { css } from '@emotion/react';
 import { FaSearch } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
+import { Image } from 'rebass';
+import SongLogo from '../assets/SongLogo(2).png';
 // import { useSelector } from 'react-redux';
 // import { useEffect, useState } from 'react';
-
+// position: fixed;
+// top: 0;
+// bottom: 2;
+//   width: -webkit-fill-available;
+//   z-index: 2000; 
 const headerStyles = css`
-  background-color: #cbd5e0;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  padding: 0.75rem 1rem; /* Adjust padding as needed */
+
+background-color: #000; /* Black background color */
+box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+padding: 0.75rem 1rem;
 `;
 
 const logoStyles = css`
@@ -16,32 +23,44 @@ const logoStyles = css`
   font-size: 1rem;
   
   span:first-of-type {
-    color: #4a5568;
+    color: #fff; 
     text-decoration: none;
   }
 
+
   span:last-of-type {
-    color: #2d3748;
+    color: #ccc;
     text-decoration: none;
+  }
+  Image {
+    max-width: 50%; // Set maximum width to ensure it fits within the container
+    height: auto; // Maintain aspect ratio
+    margin-right: 8px; // Adjust margin as needed
+  }
+
+  @media (max-width: 640px) {
+    font-size: 0.875rem; /* Adjust font size for smaller screens */
   }
 `;
 
+
 const formStyles = css`
-  background-color: #a0aec0;
+  background-color: rgba(54, 69, 79, 0.4); /* Dark gray background color */
   padding: 0.75rem;
-  border-radius: 0.375rem;
+  border-radius: 10px; /* Adjust border-radius for a slightly rounded appearance */
   display: flex;
   align-items: center;
 
   input {
-    background: transparent;
+    background: none;
     outline: none;
     border: none;
     padding: 0.25rem;
-    width: 4rem;
+    width: 5rem;
+    color: #fff; /* White text color */
     
     @media (min-width: 640px) {
-      width: 16rem;
+      width: 28rem;
     }
   }
 
@@ -50,6 +69,10 @@ const formStyles = css`
     background: none;
     border: none;
     padding: 0;
+    color: #ccc; /* Light gray icon color */
+  }
+  @media (max-width: 640px) {
+    display: none; /* Hide the entire form on small screens */
   }
 `;
 
@@ -57,11 +80,11 @@ const navigationStyles = css`
   display: flex;
   gap: 1rem;
   list-style: none;
-
   li {
-    color: #4a5568;
+    color: #fff; /* White text color */
     cursor: pointer;
-    transition: text-decoration 0.3s; /* Added transition */
+    transition: text-decoration 0.3s;
+
     &:hover {
       text-decoration: underline;
     }
@@ -100,8 +123,9 @@ const Header: React.FC = () => {
       `}>
         <Link to='/' css={css`text-decoration: none;`}>
           <h1 css={logoStyles} className='flex flex-wrap'>
-            <span>MERN</span>
-            <span>project</span>
+          <Image src={SongLogo} height={[60]} p={1}/>
+            {/* <span>MERN</span>
+            <span>project</span> */}
           </h1>
         </Link>
         <form css={formStyles}>
@@ -118,7 +142,7 @@ const Header: React.FC = () => {
           <Link to='/' css={css`text-decoration: none;`}>
             <li className='sm:inline'>List</li>
           </Link>
-          <Link to='/admin' css={css`text-decoration: none;`}>
+          <Link to='/setting' css={css`text-decoration: none;`}>
             <li className='sm:inline'>Setting</li>
           </Link>
           <Link to='/stats' css={css`text-decoration: none;`}>

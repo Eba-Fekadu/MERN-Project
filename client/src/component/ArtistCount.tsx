@@ -24,16 +24,15 @@ const ArtistCount: React.FC = () => {
       <Box p={5} width={[300, 400, 500]}>
         <Heading  fontSize={4} // Responsive font size
           mb={3}
-          textAlign={'center'}
-          color="red" // Customize the color
+          color='#606873'
           fontFamily="Montserrat, sans-serif" // Use a specific font family
           fontWeight="bold" // Customize the font weight
           letterSpacing="0.05em" >
-          Songs In Albums
+          SONGS IN ALBUMS
         </Heading>
         {genreCounts.map((item, index) => (
-          <Box key={index} mb={3} sx={{ borderBottom: '1px solid #ccc' }}>
-            <Text fontSize={3} fontWeight="bold">
+          <Box key={index} mb={3} sx={{ borderBottom: '1px solid #606873' }}>
+            <Text fontSize={3} mb={2} fontWeight="bold">
               {item._id}
             </Text>
             <Text fontSize={2}>

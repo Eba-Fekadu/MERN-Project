@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Box, Button } from 'rebass';
+import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'; // Import the arrow icons
 
-const PAGE_SIZE = 6;
+const PAGE_SIZE = 5; // Show 5 pages
 
 const Pagination: React.FC<{ totalItems: number; onPageChange: (page: number) => void }> = ({
   totalItems,
@@ -15,9 +16,30 @@ const Pagination: React.FC<{ totalItems: number; onPageChange: (page: number) =>
     onPageChange(page);
   };
 
+  const handleFirstPage = () => {
+    if (currentPage > 1) {
+      handlePageChange(1);
+    }
+  };
+
+  const handleLastPage = () => {
+    if (currentPage < totalPages) {
+      handlePageChange(currentPage + 1); // Increment current page to go to the last page
+    }
+  };
+
   return (
     <Box mt={3} textAlign="center" p={2}>
-      {Array.from({ length: totalPages }).map((_, index) => (
+      <Button
+        variant="outline"
+        onClick={handleFirstPage}
+        disabled={currentPage === 1}
+        bg="#606873"
+        mx={1}
+      >
+        <FiChevronLeft />
+      </Button>
+      {Array.from({ length: Math.min(totalPages, PAGE_SIZE) }).map((_, index) => (
         <Button
           key={index + 1}
           variant={currentPage === index + 1 ? 'primary' : 'outline'}
@@ -28,6 +50,15 @@ const Pagination: React.FC<{ totalItems: number; onPageChange: (page: number) =>
           {index + 1}
         </Button>
       ))}
+      <Button
+        variant="outline"
+        onClick={handleLastPage}
+        disabled={currentPage === totalPages}
+        bg="#606873"
+        mx={1}
+      >
+        <FiChevronRight />
+      </Button>
     </Box>
   );
 };
