@@ -14,7 +14,17 @@ interface AdminProps {
   // For example:
   // title: string;
 }
+
+interface Song {
+  _id: string;
+  Title: string;
+  Artist: string;
+  Album: string;
+  Genre: string;
+}
+
 interface FormData {
+ 
   Title: string;
   Artist: string;
   Album: string;
@@ -188,7 +198,7 @@ export default function Admin({ /* destructure props if any */ }: AdminProps): R
         return;
       }
   
-      setSongListing((prev) => prev.filter((song) => song._id !== songId));
+      setSongListing((prev) => prev.filter((song: Song) => song._id !== songId));
     } catch (error) {
       console.log((error as Error).message);
     }
@@ -372,7 +382,7 @@ Update Song
         {paginatedSongs.map((song) => ( */}
 <Flex flexWrap="wrap" justifyContent="flex-start">
       {songListing.length > 0 &&
-        paginatedSongs.map((song) => (
+        paginatedSongs.map((song: Song) => (
           
           <Box p={3} key={song._id}>
             
@@ -384,7 +394,7 @@ Update Song
     borderRadius: 8,
     overflow: 'hidden',
   }}>
-              <Image src={GallaxyImage}/>
+              <Image src={GallaxyImage} width={[1]}/>
               <Box px={2}>
                 <Heading as="h3"  mb={2} fontSize={[2, 3, 4]}>
                   {song.Title}
@@ -400,10 +410,10 @@ Update Song
                 </Text>
                 <Flex>
                 <Button onClick={()=>handleSongDelete(song._id)} variant="outline" color="white" m={1} bg='red' sx={{ ':hover': { backgroundColor: '#e35a5a', color: 'white' } }}>
-                <FiTrash2 style={{  fontSize: [8, 10, 12] }}/> Delete
+                {/* <FiTrash2 style={{  fontSize: [8, 10, 12] }}/>*/} <FiTrash2 />Delete 
       </Button>
       <Button onClick={()=>handleSongUpdate(song._id)} variant="outline" color="white" m={1} bg='green'  sx={{ ':hover': { backgroundColor: '#00c300', color: 'white' } }}>
-        <FiEdit2 style={{  fontSize: [8, 10, 12]}}/> Edit
+        <FiEdit2/> Edit
       </Button>
                 </Flex>
               </Box>

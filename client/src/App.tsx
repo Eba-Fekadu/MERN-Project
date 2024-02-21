@@ -1,6 +1,6 @@
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import List from './pages/List';
-import Statistics from './pages/statistics';
+import Statistics from './pages/Statistics';
 import Admin from './pages/Admin';
 import Header from './component/Header';
 

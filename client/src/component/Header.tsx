@@ -119,7 +119,7 @@ const Header: React.FC = () => {
             <li className='sm:inline'>List</li>
           </Link>
           <Link to='/admin' css={css`text-decoration: none;`}>
-            <li className='sm:inline'>Apply Change</li>
+            <li className='sm:inline'>Setting</li>
           </Link>
           <Link to='/stats' css={css`text-decoration: none;`}>
             <li className='sm:inline'>Statistics</li>

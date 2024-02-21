@@ -1,4 +1,8 @@
 body {
   margin: 0;
-  background-color: rgb(241, 245, 241);
+  /* background-color: rgb(241, 245, 241); */
+  background-color: #000;
+  background: linear-gradient(to bottom, #000000, #1a1a1a);
+  color: #fff; 
+  font-family: 'Poppins', sans-serif;
 }

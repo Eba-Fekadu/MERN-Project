@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import songRouter from './routes/song.routes.js';
+import statsRouter from './routes/stats.routes.js';
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.listen(3000, () => {
 });
 
 app.use('/server/song', songRouter);
+app.use('/server/stats', statsRouter);
 
 app.use((err, req, res, next) => {
     const statusCode = err.statusCode || 500;
