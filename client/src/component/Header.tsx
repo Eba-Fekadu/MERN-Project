@@ -1,33 +1,25 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
-import { FaSearch } from 'react-icons/fa';
-import { Link, useNavigate } from 'react-router-dom';
-import { Image } from 'rebass';
-import SongLogo from '../assets/SongLogo(2).png';
-import { useEffect, useState } from 'react';
-// import { useSelector } from 'react-redux';
-// import { useEffect, useState } from 'react';
-// position: fixed;
-// top: 0;
-// bottom: 2;
-//   width: -webkit-fill-available;
-//   z-index: 2000; 
-const headerStyles = css`
+import { css } from "@emotion/react"
+import { FaSearch } from "react-icons/fa"
+import { Link, useNavigate } from "react-router-dom"
+import { Image } from "rebass"
+import SongLogo from "../assets/SongLogo(2).png"
+import { useEffect, useState } from "react"
 
-background-color: #000; /* Black background color */
-box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-padding: 0.75rem 1rem;
-`;
+const headerStyles = css`
+  background-color: #000; /* Black background color */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  padding: 0.75rem 1rem;
+`
 
 const logoStyles = css`
   font-weight: bold;
   font-size: 1rem;
-  
+
   span:first-of-type {
-    color: #fff; 
+    color: #fff;
     text-decoration: none;
   }
-
 
   span:last-of-type {
     color: #ccc;
@@ -42,8 +34,7 @@ const logoStyles = css`
   @media (max-width: 640px) {
     font-size: 0.875rem; /* Adjust font size for smaller screens */
   }
-`;
-
+`
 
 const formStyles = css`
   background-color: rgba(54, 69, 79, 0.4); /* Dark gray background color */
@@ -59,7 +50,7 @@ const formStyles = css`
     padding: 0.25rem;
     width: 5rem;
     color: #fff; /* White text color */
-    
+
     @media (min-width: 640px) {
       width: 28rem;
     }
@@ -75,7 +66,7 @@ const formStyles = css`
   @media (max-width: 640px) {
     display: none; /* Hide the entire form on small screens */
   }
-`;
+`
 
 const navigationStyles = css`
   display: flex;
@@ -90,72 +81,94 @@ const navigationStyles = css`
       text-decoration: underline;
     }
   }
-`;
+`
 
 const Header: React.FC = () => {
-  // const { currentUser } = useSelector((state) => state.user);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("")
 
-  const navigate = useNavigate();
-    const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set('searchTerm', searchTerm);
-    const searchQuery = urlParams.toString();
-    navigate(`/?${searchQuery}`);
-  };
+  const navigate = useNavigate()
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const urlParams = new URLSearchParams(window.location.search)
+    urlParams.set("searchTerm", searchTerm)
+    const searchQuery = urlParams.toString()
+    navigate(`/?${searchQuery}`)
+  }
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const searchTermFromUrl = urlParams.get('searchTerm');
+    const urlParams = new URLSearchParams(location.search)
+    const searchTermFromUrl = urlParams.get("searchTerm")
     if (searchTermFromUrl) {
-      setSearchTerm(searchTermFromUrl);
+      setSearchTerm(searchTermFromUrl)
     }
-  }, [location.search]);
-
+  }, [location.search])
 
   return (
     <header css={headerStyles}>
-      <div css={css`
-        max-width: 6xl;
-        margin: 0 auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      `}>
-        <Link to='/' css={css`text-decoration: none;`}>
-          <h1 css={logoStyles} className='flex flex-wrap'>
-          <Image src={SongLogo} height={[60]} p={1}/>
-            {/* <span>MERN</span>
-            <span>project</span> */}
+      <div
+        css={css`
+          max-width: 6xl;
+          margin: 0 auto;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        `}
+      >
+        <Link
+          to="/"
+          css={css`
+            text-decoration: none;
+          `}
+        >
+          <h1 css={logoStyles} className="flex flex-wrap">
+            <Image src={SongLogo} height={[60]} p={1} />
           </h1>
         </Link>
         <form onSubmit={handleSubmit} css={formStyles}>
           <input
-            type='text'
-            placeholder='Search by Genre...'
-           value={searchTerm}
-           onChange={(e)=> setSearchTerm(e.target.value)}
+            type="text"
+            placeholder="Search by Genre..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
           <button type="submit">
-            <FaSearch css={css`color: #4a5568`} />
+            <FaSearch
+              css={css`
+                color: #4a5568;
+              `}
+            />
           </button>
         </form>
-        <ul css={navigationStyles} className='flex gap-4'>
-          <Link to='/' css={css`text-decoration: none;`}>
-            <li className='sm:inline'>List</li>
+        <ul css={navigationStyles} className="flex gap-4">
+          <Link
+            to="/"
+            css={css`
+              text-decoration: none;
+            `}
+          >
+            <li className="sm:inline">List</li>
           </Link>
-          <Link to='/setting' css={css`text-decoration: none;`}>
-            <li className='sm:inline'>Setting</li>
+          <Link
+            to="/setting"
+            css={css`
+              text-decoration: none;
+            `}
+          >
+            <li className="sm:inline">Setting</li>
           </Link>
-          <Link to='/stats' css={css`text-decoration: none;`}>
-            <li className='sm:inline'>Statistics</li>
+          <Link
+            to="/stats"
+            css={css`
+              text-decoration: none;
+            `}
+          >
+            <li className="sm:inline">Statistics</li>
           </Link>
         </ul>
       </div>
     </header>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header
