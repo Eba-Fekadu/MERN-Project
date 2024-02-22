@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Flex, Text, Heading } from 'rebass';
 
+interface Item {
+  _id: string;
+  count: string;
+}
+
 const GenreTable: React.FC = () => {
     const [genreCounts, setGenreCounts] = useState([]);
 
@@ -31,7 +36,7 @@ const GenreTable: React.FC = () => {
           letterSpacing="0.05em" >
           SONGS IN GENRES
         </Heading>
-        {genreCounts.map((item, index) => (
+        {genreCounts.map((item: Item, index) => (
           <Box key={index} mb={3} sx={{ borderBottom: '1px solid #606873' }}>
             <Text fontSize={3} mb={2} fontWeight="bold">
               {item._id}

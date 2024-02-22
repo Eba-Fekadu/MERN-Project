@@ -2,7 +2,6 @@
 import React, { ReactElement, ChangeEvent, useState, useEffect } from 'react';
 import { css } from '@emotion/react';
 import { Button, Box,Flex, Card, Image, Heading, Text } from 'rebass';
-import GallaxyImage from '../assets/music-man.jpg';
 import { useSelector, useDispatch } from 'react-redux';
 import {createStart, createSuccess, createFailure} from '../redux/song/songSlice.ts';
 import { RootState } from '../redux/store.ts';

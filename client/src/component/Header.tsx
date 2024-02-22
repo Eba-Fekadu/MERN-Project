@@ -97,7 +97,6 @@ const Header: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const navigate = useNavigate();
-  // const handleSubmit = (e: { preventDefault: () => void; }) => {
     const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -135,7 +134,7 @@ const Header: React.FC = () => {
         <form onSubmit={handleSubmit} css={formStyles}>
           <input
             type='text'
-            placeholder='Search...'
+            placeholder='Search by Genre...'
            value={searchTerm}
            onChange={(e)=> setSearchTerm(e.target.value)}
           />
