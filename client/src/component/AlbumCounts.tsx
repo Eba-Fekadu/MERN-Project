@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Flex, Text, Heading } from 'rebass';
 
+interface Item {
+  artist: string;
+  totalSongs: string;
+  totalAlbums: string;
+}
+
 const AlbumCounts: React.FC = () => {
     const [genreCounts, setGenreCounts] = useState([]);
 
@@ -30,7 +36,7 @@ const AlbumCounts: React.FC = () => {
           letterSpacing="0.05em">
          ARTISTS SONGS & ALBUMS
         </Heading>
-        {genreCounts.map((item, index) => (
+        {genreCounts.map((item: Item, index) => (
           <Box key={index} mb={3} sx={{ borderBottom: '1px solid #606873' }}>
             <Text fontSize={3} mb={2} fontWeight="bold">
               {item.artist}
