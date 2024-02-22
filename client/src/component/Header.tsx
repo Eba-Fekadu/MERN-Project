@@ -4,6 +4,7 @@ import { FaSearch } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import { Image } from 'rebass';
 import SongLogo from '../assets/SongLogo(2).png';
+import { useEffect, useState } from 'react';
 // import { useSelector } from 'react-redux';
 // import { useEffect, useState } from 'react';
 // position: fixed;
@@ -93,24 +94,27 @@ const navigationStyles = css`
 
 const Header: React.FC = () => {
   // const { currentUser } = useSelector((state) => state.user);
-  // const [searchTerm, setSearchTerm] = useState('');
-  // const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState('');
 
-  // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   const urlParams = new URLSearchParams(window.location.search);
-  //   urlParams.set('searchTerm', searchTerm);
-  //   const searchQuery = urlParams.toString();
-  //   navigate(`/search?${searchQuery}`);
-  // };
+  const navigate = useNavigate();
+  // const handleSubmit = (e: { preventDefault: () => void; }) => {
+    const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set('searchTerm', searchTerm);
+    const searchQuery = urlParams.toString();
+    navigate(`/?${searchQuery}`);
+  };
 
-  // useEffect(() => {
-  //   const urlParams = new URLSearchParams(window.location.search);
-  //   const searchTermFromUrl = urlParams.get('searchTerm');
-  //   if (searchTermFromUrl) {
-  //     setSearchTerm(searchTermFromUrl);
-  //   }
-  // }, []);
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const searchTermFromUrl = urlParams.get('searchTerm');
+    if (searchTermFromUrl) {
+      setSearchTerm(searchTermFromUrl);
+    }
+  }, [location.search]);
+
 
   return (
     <header css={headerStyles}>
@@ -128,13 +132,14 @@ const Header: React.FC = () => {
             <span>project</span> */}
           </h1>
         </Link>
-        <form css={formStyles}>
+        <form onSubmit={handleSubmit} css={formStyles}>
           <input
             type='text'
             placeholder='Search...'
-            className='bg-transparent focus:outline-none w-24 sm:w-64'
+           value={searchTerm}
+           onChange={(e)=> setSearchTerm(e.target.value)}
           />
-          <button>
+          <button type="submit">
             <FaSearch css={css`color: #4a5568`} />
           </button>
         </form>

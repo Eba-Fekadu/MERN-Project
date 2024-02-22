@@ -2,6 +2,7 @@ import { ReactElement, useState, useEffect } from 'react';
 import { Box,Flex, Card, Image, Heading, Text } from 'rebass';
 import SongLogo from '../assets/SongLogo(2).png';
 import Pagination from '../component/Pagination.tsx';
+import { useParams } from 'react-router-dom';
 
 
 interface Song {
@@ -21,11 +22,45 @@ export default function list({ /* destructure props if any */ }: listProps): Rea
   const [songListing, setSongListing] = useState([]);
   const [showListingError, setShowListingError] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  // const [searchTerm, setSearchTerm] = useState('');
+  const urlParams = new URLSearchParams(location.search);
+  const searchTermFromUrl = urlParams.get('searchTerm') || '';
+  const { searchTerm } = useParams();
+  // const [sideBarData, setsidebardata] = useState(1);
+
+  // const { searchTerm } = useParams();
+  const searchedSongList = async() => {
+    const response = await fetch(`/server/song/getSearch?searchTerm=${searchTerm}`);
+    if (response) {
+      console.log(response.json());
+      return response.json();
+    }
+  }
+
+
 
   useEffect(() => {
     handleShowListings();
 
-  }, []); 
+    const urlParams = new URLSearchParams(location.search);
+   
+
+   
+
+    const fetchListings = async() => {
+
+      const searchQuery = urlParams.toString();
+      const res = await fetch(`/server/song/getSearch?${searchQuery}`);
+      const data = await res.json();
+     
+      setSongListing(data);
+    };
+
+    fetchListings();
+ 
+
+  }, [location.search]); 
+ 
 
   const handleShowListings = async() =>{
     try {
