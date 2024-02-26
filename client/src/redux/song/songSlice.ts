@@ -1,14 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
 
-interface Song {
-  _id: string
-  Title: string
-  Artist: string
-  Album: string
-  Genre: string
-}
-
 export interface SongState {
   error: string
   loading: boolean
@@ -17,11 +9,14 @@ export interface SongState {
   updateData: string
   success: string
   currentPage: number
-  songListing: Song[]
+  songListing: []
+  searchTerm: string
+  genreStats: []
+  albumStats: []
+  artistStats: []
 }
 
 const initialState: SongState = {
-  //   value: 0,
   error: "",
   success: "",
   loading: false,
@@ -30,6 +25,10 @@ const initialState: SongState = {
   updateData: "",
   currentPage: 1,
   songListing: [],
+  searchTerm: "",
+  genreStats: [],
+  albumStats: [],
+  artistStats: [],
 }
 
 export const songSlice = createSlice({
@@ -66,13 +65,25 @@ export const songSlice = createSlice({
       state.showListingError = false
     },
     listingErrorSuccess: (state) => {
-      state.showListingError = false
+      state.showListingError = true
     },
-    listingSuccess: (state, action: PayloadAction<Song[]>) => {
+    listingSuccess: (state, action: PayloadAction<[]>) => {
       state.songListing = action.payload
     },
     currentPagination: (state, action: PayloadAction<number>) => {
       state.currentPage = action.payload
+    },
+    searchState: (state, action: PayloadAction<string>) => {
+      state.searchTerm = action.payload
+    },
+    genreDataReturn: (state, action: PayloadAction<[]>) => {
+      state.genreStats = action.payload
+    },
+    albumDataReturn: (state, action: PayloadAction<[]>) => {
+      state.albumStats = action.payload
+    },
+    artistDataReturn: (state, action: PayloadAction<[]>) => {
+      state.artistStats = action.payload
     },
   },
 })
@@ -89,6 +100,10 @@ export const {
   listingErrorSuccess,
   currentPagination,
   listingSuccess,
+  searchState,
+  genreDataReturn,
+  albumDataReturn,
+  artistDataReturn,
 } = songSlice.actions
 
 export default songSlice.reducer
