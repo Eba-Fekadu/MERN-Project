@@ -4,7 +4,10 @@ import { FaSearch } from "react-icons/fa"
 import { Link, useNavigate } from "react-router-dom"
 import { Image } from "rebass"
 import SongLogo from "../assets/SongLogo(2).png"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
+import { useSelector, useDispatch } from "react-redux"
+import { RootState } from "../redux/store.ts"
+import { searchState } from "../redux/song/songSlice.ts"
 
 const headerStyles = css`
   background-color: #000; /* Black background color */
@@ -84,7 +87,8 @@ const navigationStyles = css`
 `
 
 const Header: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState("")
+  const { searchTerm } = useSelector((state: RootState) => state.songs)
+  const dispatch = useDispatch()
 
   const navigate = useNavigate()
   const handleSubmit = (e: React.FormEvent) => {
@@ -100,7 +104,7 @@ const Header: React.FC = () => {
     const urlParams = new URLSearchParams(location.search)
     const searchTermFromUrl = urlParams.get("searchTerm")
     if (searchTermFromUrl) {
-      setSearchTerm(searchTermFromUrl)
+      dispatch(searchState(searchTermFromUrl))
     }
   }, [location.search])
 
@@ -130,7 +134,7 @@ const Header: React.FC = () => {
             type="text"
             placeholder="Search by Genre..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => dispatch(searchState(e.target.value))}
           />
           <button type="submit">
             <FaSearch

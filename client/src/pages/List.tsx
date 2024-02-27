@@ -1,8 +1,15 @@
-import { ReactElement, useState, useEffect } from "react"
+import { ReactElement, useEffect } from "react"
 import { Box, Flex, Card, Image, Heading, Text } from "rebass"
 import SongLogo from "../assets/SongLogo(2).png"
 import Pagination from "../component/Pagination.tsx"
-import { useParams } from "react-router-dom"
+import { useSelector, useDispatch } from "react-redux"
+import { RootState } from "../redux/store.ts"
+import {
+  listingSuccess,
+  listingErrorStart,
+  listingErrorSuccess,
+  currentPagination,
+} from "../redux/song/songSlice.ts"
 
 interface Song {
   _id: string
@@ -12,16 +19,12 @@ interface Song {
   Genre: string
 }
 
-interface listProps {
-  // Add any props that the Admin component may receive
-  // For example:
-  // title: string;
-}
-export default function list({} /* destructure props if any */ : listProps): ReactElement {
-  const [songListing, setSongListing] = useState([])
-  const [showListingError, setShowListingError] = useState(false)
-  const [currentPage, setCurrentPage] = useState(1)
-
+interface listProps {}
+export default function list({}: listProps): ReactElement {
+  const { songListing, showListingError, currentPage } = useSelector(
+    (state: RootState) => state.songs,
+  )
+  const dispatch = useDispatch()
   useEffect(() => {
     handleShowListings()
 
@@ -31,7 +34,7 @@ export default function list({} /* destructure props if any */ : listProps): Rea
       const res = await fetch(`/server/song/getSearch?${searchQuery}`)
       const data = await res.json()
 
-      setSongListing(data)
+      dispatch(listingSuccess(data))
     }
 
     fetchListings()
@@ -39,21 +42,20 @@ export default function list({} /* destructure props if any */ : listProps): Rea
 
   const handleShowListings = async () => {
     try {
-      setShowListingError(false)
+      dispatch(listingErrorStart())
       const res = await fetch("/server/song/listings")
       const data = await res.json()
       if (data.success === false) {
-        setShowListingError(true)
+        dispatch(listingErrorSuccess())
         return
       }
-
-      setSongListing(data)
+      dispatch(listingSuccess(data))
     } catch (error) {
-      setShowListingError(true)
+      dispatch(listingErrorSuccess())
     }
   }
   const onPageChange = (page: number) => {
-    setCurrentPage(page)
+    dispatch(currentPagination(page))
   }
 
   const paginatedSongs = songListing.slice(
@@ -94,8 +96,6 @@ export default function list({} /* destructure props if any */ : listProps): Rea
                       <Text fontSize={[0, 0, 1]} mb={2} px={2}>
                         {song.Album} : {song.Genre}
                       </Text>
-
-                      <Flex></Flex>
                     </Box>
                   </Card>
                 </Box>

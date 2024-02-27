@@ -1,5 +1,8 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import { Box, Flex, Text, Heading } from "rebass"
+import { useSelector, useDispatch } from "react-redux"
+import { RootState } from "../redux/store.ts"
+import { genreDataReturn } from "../redux/song/songSlice.ts"
 
 interface Item {
   _id: string
@@ -7,12 +10,13 @@ interface Item {
 }
 
 const GenreTable: React.FC = () => {
-  const [genreCounts, setGenreCounts] = useState([])
+  const { genreStats } = useSelector((state: RootState) => state.songs)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     fetch("/server/stats/genre")
       .then((response) => response.json())
-      .then((data) => setGenreCounts(data))
+      .then((data) => dispatch(genreDataReturn(data)))
       .catch((error) => console.error("Error fetching song genres:", error))
   }, [])
 
@@ -20,7 +24,7 @@ const GenreTable: React.FC = () => {
     <Flex>
       <Box p={5} width={[300, 400, 500]}>
         <Heading
-          fontSize={4}
+          fontSize={[2, 3, 4]}
           mb={3}
           color="#606873"
           fontFamily="Montserrat, sans-serif"
@@ -29,14 +33,17 @@ const GenreTable: React.FC = () => {
         >
           SONGS IN GENRES
         </Heading>
-        {genreCounts.map((item: Item, index) => (
-          <Box key={index} mb={3} sx={{ borderBottom: "1px solid #606873" }}>
-            <Text fontSize={3} mb={2} fontWeight="bold">
-              {item._id}
-            </Text>
-            <Text fontSize={2}>No of songs: {item.count}</Text>
-          </Box>
-        ))}
+        {genreStats &&
+          genreStats.map((item: Item, index) => (
+            <Box key={index} mb={3} sx={{ borderBottom: "1px solid #606873" }}>
+              <Text fontSize={3} mb={2} fontWeight="bold">
+                {item._id}
+              </Text>
+              <Text style={{ color: "rgba(255, 255, 255, 0.4)" }} fontSize={2}>
+                No of songs: {item.count}
+              </Text>
+            </Box>
+          ))}
       </Box>
     </Flex>
   )

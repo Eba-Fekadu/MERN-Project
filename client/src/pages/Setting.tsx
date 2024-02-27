@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React, { ReactElement, ChangeEvent, useState, useEffect } from "react"
 import { css } from "@emotion/react"
-import { Button, Box, Flex, Card, Image, Heading, Text } from "rebass"
+import { Button, Box, Flex, Card, Image, Text } from "rebass"
 import { useSelector, useDispatch } from "react-redux"
 import {
   successToast,
@@ -275,7 +275,6 @@ export default function Setting({}: SettingProps): ReactElement {
       dispatch(listingErrorSuccess())
     }
   }
-  console.log(formData)
 
   const onPageChange = (page: number) => {
     dispatch(currentPagination(page))
@@ -313,7 +312,6 @@ export default function Setting({}: SettingProps): ReactElement {
               type="text"
               css={inputStyles}
               placeholder="title"
-              className="bg-transparent focus:outline-none w-24 sm:w-64"
               id="Title"
               value={formData.Title}
               onChange={handleChange}
@@ -324,7 +322,6 @@ export default function Setting({}: SettingProps): ReactElement {
               type="text"
               css={inputStyles}
               placeholder="artist"
-              className="bg-transparent focus:outline-none w-24 sm:w-64"
               id="Artist"
               value={formData.Artist}
               onChange={handleChange}
@@ -335,7 +332,6 @@ export default function Setting({}: SettingProps): ReactElement {
               type="text"
               css={inputStyles}
               placeholder="album"
-              className="bg-transparent focus:outline-none w-24 sm:w-64"
               id="Album"
               value={formData.Album}
               onChange={handleChange}
@@ -346,7 +342,6 @@ export default function Setting({}: SettingProps): ReactElement {
               type="text"
               css={inputStyles}
               placeholder="genre"
-              className="bg-transparent focus:outline-none w-24 sm:w-64"
               id="Genre"
               value={formData.Genre}
               onChange={handleChange}

@@ -1,6 +1,9 @@
-import React, { useState } from "react"
+import React from "react"
 import { Box, Button } from "rebass"
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi"
+import { useSelector, useDispatch } from "react-redux"
+import { RootState } from "../redux/store.ts"
+import { currentPagination } from "../redux/song/songSlice.ts"
 
 const PAGE_SIZE = 5
 
@@ -8,11 +11,12 @@ const Pagination: React.FC<{
   totalItems: number
   onPageChange: (page: number) => void
 }> = ({ totalItems, onPageChange }) => {
-  const [currentPage, setCurrentPage] = useState(1)
+  const { currentPage } = useSelector((state: RootState) => state.songs)
+  const dispatch = useDispatch()
   const totalPages = Math.ceil(totalItems / PAGE_SIZE)
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page)
+    dispatch(currentPagination(page))
     onPageChange(page)
   }
 
