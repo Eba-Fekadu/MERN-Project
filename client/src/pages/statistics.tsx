@@ -1,10 +1,10 @@
 import { ReactElement } from "react"
 
 import { Card, Flex } from "rebass"
-import GenreCounts from "../component/GenreTable.tsx"
-import AlbumCounts from "../component/AlbumCounts.tsx"
-import ArtistCounts from "../component/ArtistCount.tsx"
-import TotalStat from "../component/TotalStat.tsx"
+import GenreCounts from "../component/GenreStatCompopnent/GenreStat.tsx"
+import AlbumCounts from "../component/ArtistStatComponent/ArtistStat.tsx"
+import ArtistCounts from "../component/AlbumStatComponent/AlbumStat.tsx"
+import TotalStat from "../component/OverAllStatComponent/OverAllStat.tsx"
 interface StatisticsProps {}
 
 export default function Statistics({}: StatisticsProps): ReactElement {

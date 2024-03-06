@@ -4,7 +4,6 @@ import { FaSearch } from "react-icons/fa"
 import { Link, useNavigate } from "react-router-dom"
 import { Image } from "rebass"
 import SongLogo from "../assets/SongLogo(2).png"
-import { useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { RootState } from "../redux/store.ts"
 import { searchState } from "../redux/song/songSlice.ts"
@@ -91,6 +90,7 @@ const Header: React.FC = () => {
   const dispatch = useDispatch()
 
   const navigate = useNavigate()
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -99,14 +99,6 @@ const Header: React.FC = () => {
     const searchQuery = urlParams.toString()
     navigate(`/?${searchQuery}`)
   }
-
-  useEffect(() => {
-    const urlParams = new URLSearchParams(location.search)
-    const searchTermFromUrl = urlParams.get("searchTerm")
-    if (searchTermFromUrl) {
-      dispatch(searchState(searchTermFromUrl))
-    }
-  }, [location.search])
 
   return (
     <header css={headerStyles}>

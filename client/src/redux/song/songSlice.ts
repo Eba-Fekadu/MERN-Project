@@ -4,6 +4,7 @@ import type { PayloadAction } from "@reduxjs/toolkit"
 export interface SongState {
   error: string
   loading: boolean
+  isLoading: boolean
   isUpdateMode: boolean
   showListingError: boolean
   updateData: string
@@ -20,6 +21,7 @@ const initialState: SongState = {
   error: "",
   success: "",
   loading: false,
+  isLoading: false,
   isUpdateMode: false,
   showListingError: false,
   updateData: "",
@@ -37,6 +39,10 @@ export const songSlice = createSlice({
   reducers: {
     successToast: (state, action: PayloadAction<string>) => {
       state.success = action.payload
+    },
+
+    showListings: (state) => {
+      state.isLoading = true
     },
     createStart: (state) => {
       state.loading = true
@@ -92,6 +98,7 @@ export const {
   successToast,
   createStart,
   createSuccess,
+  showListings,
   createFailure,
   updateStart,
   updateSuccess,

@@ -1,8 +1,7 @@
 import React, { useEffect } from "react"
 import { Box, Flex, Text, Heading } from "rebass"
 import { useSelector, useDispatch } from "react-redux"
-import { RootState } from "../redux/store.ts"
-import { genreDataReturn } from "../redux/song/songSlice.ts"
+import { RootState } from "../../redux/store.ts"
 
 interface Item {
   _id: string
@@ -14,11 +13,8 @@ const GenreTable: React.FC = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    fetch("/server/stats/genre")
-      .then((response) => response.json())
-      .then((data) => dispatch(genreDataReturn(data)))
-      .catch((error) => console.error("Error fetching song genres:", error))
-  }, [])
+    dispatch({ type: "FETCH_GENRE_STATS" })
+  }, [dispatch])
 
   return (
     <Flex>

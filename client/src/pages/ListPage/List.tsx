@@ -1,15 +1,10 @@
 import { ReactElement, useEffect } from "react"
 import { Box, Flex, Card, Image, Heading, Text } from "rebass"
-import SongLogo from "../assets/SongLogo(2).png"
-import Pagination from "../component/Pagination.tsx"
+import SongLogo from "../../assets/SongLogo(2).png"
+import Pagination from "../../component/Pagination.tsx"
 import { useSelector, useDispatch } from "react-redux"
-import { RootState } from "../redux/store.ts"
-import {
-  listingSuccess,
-  listingErrorStart,
-  listingErrorSuccess,
-  currentPagination,
-} from "../redux/song/songSlice.ts"
+import { RootState } from "../../redux/store.ts"
+import { currentPagination } from "../../redux/song/songSlice.ts"
 
 interface Song {
   _id: string
@@ -21,39 +16,17 @@ interface Song {
 
 interface listProps {}
 export default function list({}: listProps): ReactElement {
-  const { songListing, showListingError, currentPage } = useSelector(
-    (state: RootState) => state.songs,
-  )
+  const { songListing, showListingError, currentPage, searchTerm } =
+    useSelector((state: RootState) => state.songs)
+
   const dispatch = useDispatch()
   useEffect(() => {
-    handleShowListings()
-
     const urlParams = new URLSearchParams(location.search)
-    const fetchListings = async () => {
-      const searchQuery = urlParams.toString()
-      const res = await fetch(`/server/song/getSearch?${searchQuery}`)
-      const data = await res.json()
+    const searchQuery = urlParams.toString()
 
-      dispatch(listingSuccess(data))
-    }
+    dispatch({ type: "FETCH_SONG_LISTS", payload: searchQuery })
+  }, [location.search, searchTerm])
 
-    fetchListings()
-  }, [location.search])
-
-  const handleShowListings = async () => {
-    try {
-      dispatch(listingErrorStart())
-      const res = await fetch("/server/song/listings")
-      const data = await res.json()
-      if (data.success === false) {
-        dispatch(listingErrorSuccess())
-        return
-      }
-      dispatch(listingSuccess(data))
-    } catch (error) {
-      dispatch(listingErrorSuccess())
-    }
-  }
   const onPageChange = (page: number) => {
     dispatch(currentPagination(page))
   }

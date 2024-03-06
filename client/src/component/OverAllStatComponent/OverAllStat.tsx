@@ -1,13 +1,8 @@
 import React, { useEffect } from "react"
-import StatImage from "../assets/StatImage.png"
+import StatImage from "../../assets/StatImage.png"
 import { Image, Card, Heading, Flex, Text } from "rebass"
 import { useSelector, useDispatch } from "react-redux"
-import { RootState } from "../redux/store.ts"
-import {
-  listingSuccess,
-  listingErrorStart,
-  listingErrorSuccess,
-} from "../redux/song/songSlice.ts"
+import { RootState } from "../../redux/store.ts"
 
 interface Song {
   totalSongs: string
@@ -23,38 +18,13 @@ const TotalStat: React.FC = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    handleShowListings()
-  }, [])
-
-  const handleShowListings = async () => {
-    try {
-      dispatch(listingErrorStart())
-      const res = await fetch("/server/stats/overallStats")
-      const data = await res.json()
-      if (data.success === false) {
-        dispatch(listingErrorSuccess())
-        return
-      }
-
-      dispatch(listingSuccess(data))
-    } catch (error) {
-      dispatch(listingErrorSuccess())
-    }
-  }
+    dispatch({ type: "FETCH_OVERALL_STATS" })
+  }, [dispatch])
 
   return (
     <Flex flexWrap="wrap">
       {songListing &&
         songListing.map((song: Song) => (
-          // <Card
-          //   width={[1]}
-          //   height={[100, 150, 200]}
-          //   m={4}
-          //   sx={{
-          //     display: "flex",
-          //     flexDirection: "row",
-          //   }}
-          // >
           <Flex
             key={song.totalSongs}
             flexDirection={["column", "row", "row"]}

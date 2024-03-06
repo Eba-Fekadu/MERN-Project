@@ -1,8 +1,8 @@
 import React, { useEffect } from "react"
 import { Box, Flex, Text, Heading } from "rebass"
 import { useSelector, useDispatch } from "react-redux"
-import { RootState } from "../redux/store.ts"
-import { albumDataReturn } from "../redux/song/songSlice.ts"
+import { RootState } from "../../redux/store.ts"
+// import { albumDataReturn } from "../../redux/song/songSlice.ts"
 
 interface Item {
   _id: string
@@ -14,11 +14,12 @@ const ArtistCount: React.FC = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    fetch("/server/stats/albumCounts")
-      .then((response) => response.json())
-      .then((data) => dispatch(albumDataReturn(data)))
-      .catch((error) => console.error("Error fetching song genres:", error))
-  }, [])
+    // fetch("/server/stats/albumCounts")
+    //   .then((response) => response.json())
+    //   .then((data) => dispatch(albumDataReturn(data)))
+    //   .catch((error) => console.error("Error fetching song genres:", error))
+    dispatch({ type: "FETCH_ALBUM_STATS" })
+  }, [dispatch])
   return (
     <Flex>
       <Box p={5} width={[300, 400, 500]}>
