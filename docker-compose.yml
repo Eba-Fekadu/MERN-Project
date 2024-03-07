@@ -1,0 +1,9 @@
+version: "4"
+services:
+  server:
+    build: ./server
+    ports:
+      - "80:80"
+    volumes:
+      - ./server:/app
+      - /app/node_modules
