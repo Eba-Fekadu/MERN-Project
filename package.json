@@ -1,6 +1,7 @@
 {
-  "name": "rest-api-docker",
+  "name": "mern-project",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -13,7 +14,7 @@
     "url": "git+https://github.com/Eba-Fekadu/MERN-Project.git"
   },
   "keywords": [],
-  "author": "eba",
+  "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Eba-Fekadu/MERN-Project/issues"
@@ -27,6 +28,5 @@
   },
   "devDependencies": {
     "prettier": "3.2.5"
-  },
-  "description": ""
+  }
 }
