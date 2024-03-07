@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import List from "./pages/ListPage/List"
-import Statistics from "./pages/Statistics"
+import Statistics from "./pages/statistics"
 import Setting from "./pages/SettingPage/Setting"
 import Header from "./component/Header"
 
