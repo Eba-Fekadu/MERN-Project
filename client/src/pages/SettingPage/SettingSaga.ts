@@ -1,4 +1,4 @@
-import { put, call } from "redux-saga/effects"
+import { put, call, delay } from "redux-saga/effects"
 
 import {
   listingErrorStart,
@@ -43,23 +43,19 @@ export function* fetchSongUpdate(action: {
   payload: string
 }): Generator<any, void, any> {
   try {
-    // dispatch(updateStart())
     yield put(updateStart())
     const res = yield call(fetch, `/server/song/get/${action.payload}`)
     const data = yield res.json()
 
     if (data.success === false) {
       yield put(createFailure(data.message))
-      //   dispatch(createFailure(data.message))
       console.log(data.message)
       return
     }
 
-    // dispatch(updateSuccess(songId))
     yield put(setUpdateFormData(data))
     yield put(updateSuccess(action.payload))
   } catch (error) {
-    // yield put(listingErrorStart())
     console.error("Error fetching update listing", error)
   }
 }
@@ -83,28 +79,24 @@ export function* updateSong(action: {
 
     if (data.success === false) {
       yield put(createFailure(data.message))
-      setTimeout(() => {
-        put(createFailure(""))
-      }, 4000)
+      yield delay(4000)
+
+      yield put(createFailure(""))
+
       return
     }
 
-    // dispatch(updateSuccess(songId))
     yield put(setFormData({ Title: "", Artist: "", Album: "", Genre: "" }))
     yield put(createSuccess(data))
 
-    // handleShowListings()
-    put(fetchSongListing)
     yield put(updateReturn())
-    window.location.reload()
+    yield call(fetchSongListing)
   } catch (error) {
     if (error instanceof Error) {
-      // dispatch(createFailure(error.message))
       yield put(createFailure(error.message))
-      setTimeout(() => {
-        put(createFailure(""))
-      }, 4000)
-      yield put(successToast(""))
+      yield delay(4000)
+
+      yield put(createFailure(""))
     } else {
       console.error("Unexpected error:", error)
     }
@@ -122,7 +114,6 @@ export function* fetchSongDelete(action: {
     if (!userConfirmed) {
       return
     }
-    //   yield put(createStart())
     const response = yield call(fetch, `server/song/delete/${action.payload}`, {
       method: "DELETE",
     })
@@ -137,8 +128,7 @@ export function* fetchSongDelete(action: {
       console.log(data.message)
       return
     }
-    window.location.reload()
-    // put(fetchSongListing)
+    yield call(fetchSongListing)
   } catch (error) {
     console.log((error as Error).message)
   }
@@ -151,7 +141,7 @@ export function* fetchSongSubmit(action: {
   try {
     yield put(createStart())
     yield new Promise((resolve) => setTimeout(resolve, 1000))
-    //   /server/song/create
+
     const res = yield call(fetch, ` /server/song/create`, {
       method: "POST",
       headers: {
@@ -163,33 +153,30 @@ export function* fetchSongSubmit(action: {
 
     if (data.success === false) {
       yield put(createFailure(data.message))
-      setTimeout(() => {
-        put(createFailure(""))
-      }, 4000)
+      yield delay(4000)
+
+      yield put(createFailure(""))
+
       return
     }
 
-    // dispatch(updateSuccess(songId))
     yield put(setFormData({ Title: "", Artist: "", Album: "", Genre: "" }))
-    //       dispatch(createSuccess(data))
 
     yield put(createSuccess(data))
     yield put(successToast(data))
 
-    setTimeout(() => {
-      put(successToast(""))
-    }, 4000)
+    yield delay(4000)
 
-    // put(fetchSongListing)
-    put({ type: "FETCH_SONG_LISTING" })
-    // window.location.reload()
+    yield put(successToast(""))
+
+    yield call(fetchSongListing)
   } catch (error) {
     if (error instanceof Error) {
-      // dispatch(createFailure(error.message))
       yield put(createFailure(error.message))
-      setTimeout(() => {
-        put(createFailure(""))
-      }, 4000)
+      yield delay(4000)
+
+      yield put(createFailure(""))
+
       yield put(successToast(""))
     } else {
       console.error("Unexpected error:", error)

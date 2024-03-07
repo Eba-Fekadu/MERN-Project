@@ -1,17 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { useNavigate } from "react-router-dom"
-// import type { PayloadAction } from "@reduxjs/toolkit"
 
 interface FormData {
   Title: string
   Artist: string
   Album: string
   Genre: string
-}
-interface NavigateToSettingPayload {
-  state: {
-    formData: FormData
-  }
 }
 
 export interface SongState {
@@ -57,30 +50,13 @@ export const songSlice = createSlice({
   name: "song",
   initialState,
   reducers: {
-    navigateToSetting: (state, action: PayloadAction<FormData>) => {
-      const formData = action.payload
-      const navigate = useNavigate()
-
-      // Handle navigation logic
-      // Example: Navigate to "/setting" with formData in the state
-      navigate("/setting", { state: { formData } })
-    },
-
     setFormData: (state, action: PayloadAction<Partial<FormData>>) => {
       state.formData = { ...state.formData, ...action.payload }
-      // return { ...state, ...action.payload }
     },
 
     setUpdateFormData: (state, action: PayloadAction<FormData>) => {
       state.formData = { ...action.payload }
     },
-
-    // setupdateFormData: (state, action: PayloadAction<Partial<FormData>>) => {
-    //   // Merge the existing form data with the new data from the payload
-    //   state.formData = { ...state.formData, ...action.payload }
-    // },
-
-    // resetFormData: () => initialState,
 
     successToast: (state, action: PayloadAction<string>) => {
       state.success = action.payload
@@ -137,10 +113,8 @@ export const songSlice = createSlice({
 })
 
 export const {
-  navigateToSetting,
   setFormData,
   setUpdateFormData,
-  // resetFormData,
   successToast,
   createStart,
   createSuccess,
