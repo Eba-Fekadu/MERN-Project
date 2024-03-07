@@ -3,7 +3,7 @@ import mongoose from "mongoose"
 import dotenv from "dotenv"
 import songRouter from "./routes/song.routes.js"
 import statsRouter from "./routes/stats.routes.js"
-
+import path from "path"
 dotenv.config()
 
 mongoose
@@ -16,6 +16,7 @@ mongoose
     console.log(err)
   })
 
+const _dirname = path.resolve()
 const app = express()
 
 app.use(express.json())
@@ -26,6 +27,12 @@ app.listen(3000, () => {
 
 app.use("/server/song", songRouter)
 app.use("/server/stats", statsRouter)
+
+app.use(express.static(path.join(__dirname, "/client/dist")))
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "dist", "index.html"))
+})
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500
