@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import List from "./pages/ListPage/List"
 import Statistics from "./pages/Statistics"
-import Setting from "./pages/Setting"
+import Setting from "./pages/SettingPage/Setting"
 import Header from "./component/Header"
 
 export default function App() {

@@ -11,16 +11,18 @@ import {
   updateStart,
   updateSuccess,
   updateReturn,
+  setFormData,
+  setUpdateFormData,
   listingErrorStart,
   listingErrorSuccess,
   currentPagination,
   listingSuccess,
-} from "../redux/song/songSlice.ts"
-import { RootState } from "../redux/store.ts"
-import Pagination from "../component/Pagination.tsx"
+} from "../../redux/song/songSlice.ts"
+import { RootState } from "../../redux/store.ts"
+import Pagination from "../../component/Pagination.tsx"
 import { FiTrash2, FiEdit2 } from "react-icons/fi"
 import { useNavigate } from "react-router-dom"
-import SongLogo from "../assets/SongLogo(2).png"
+import SongLogo from "../../assets/SongLogo(2).png"
 
 interface SettingProps {}
 
@@ -32,12 +34,12 @@ interface Song {
   Genre: string
 }
 
-interface FormData {
-  Title: string
-  Artist: string
-  Album: string
-  Genre: string
-}
+// interface FormData {
+//   Title: string
+//   Artist: string
+//   Album: string
+//   Genre: string
+// }
 
 const inputStyles = css`
   background-color: rgba(54, 69, 79, 0.4);
@@ -72,14 +74,15 @@ const inputStyles = css`
 `
 
 export default function Setting({}: SettingProps): ReactElement {
-  const [formData, setFormData] = useState<FormData>({
-    Title: "",
-    Artist: "",
-    Album: "",
-    Genre: "",
-  })
+  // const [formData, setFormData] = useState<FormData>({
+  //   Title: "",
+  //   Artist: "",
+  //   Album: "",
+  //   Genre: "",
+  // })
 
   const {
+    formData,
     loading,
     error,
     updateData,
@@ -98,182 +101,220 @@ export default function Setting({}: SettingProps): ReactElement {
   const dispatch = useDispatch()
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.id]: e.target.value,
-    })
+    // setFormData({
+    //   ...formData,
+    //   [e.target.id]: e.target.value,
+    // })
+
+    dispatch(setFormData({ [e.target.id]: e.target.value }))
+
+    // const { name, value } = e.target
+    // dispatch(setFormData({ [name]: value }))
+
+    // const { name, value } = e.target
+    // // Dispatch the setupdateFormData action with the updated field
+    // dispatch(setupdateFormData({ ...formData, [name]: value }))
+
+    // const { id, value } = e.target;
+    // dispatch(updateField({ field: id as keyof typeof formData, value }));
   }
   const handleReturn = () => {
     dispatch(updateReturn())
-    setFormData({
-      ...formData,
-      Title: "",
-      Artist: "",
-      Album: "",
-      Genre: "",
-    })
-  }
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    try {
-      dispatch(createStart())
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      const res = await fetch("/server/song/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      })
-      const data = await res.json()
-      if (data.success === false) {
-        dispatch(createFailure(data.message))
-        setTimeout(() => {
-          dispatch(createFailure(""))
-        }, 4000)
-        return
-      }
 
+    dispatch(
       setFormData({
-        ...formData,
         Title: "",
         Artist: "",
         Album: "",
         Genre: "",
-      })
+      }),
+    )
+  }
 
-      dispatch(createSuccess(data))
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    dispatch({ type: "FETCH_SONG_SUBMIT", payload: formData })
 
-      dispatch(successToast(data))
-      setTimeout(() => {
-        dispatch(successToast(""))
-      }, 4000)
-      console.log(data)
-      handleShowListings()
-    } catch (error) {
-      if (error instanceof Error) {
-        dispatch(createFailure(error.message))
-        setTimeout(() => {
-          dispatch(createFailure(""))
-        }, 4000)
+    // try {
+    //   dispatch(createStart())
+    //   await new Promise((resolve) => setTimeout(resolve, 1000))
+    //   const res = await fetch("/server/song/create", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(formData),
+    //   })
+    //   const data = await res.json()
+    //   if (data.success === false) {
+    //     dispatch(createFailure(data.message))
+    //     setTimeout(() => {
+    //       dispatch(createFailure(""))
+    //     }, 4000)
+    //     return
+    //   }
 
-        dispatch(successToast(""))
-      } else {
-        console.error("Unexpected error:", error)
-      }
-    }
+    //   dispatch(
+    //     setFormData({
+    //       Title: "",
+    //       Artist: "",
+    //       Album: "",
+    //       Genre: "",
+    //     }),
+    //   )
+
+    //   dispatch(createSuccess(data))
+
+    //   dispatch(successToast(data))
+    //   setTimeout(() => {
+    //     dispatch(successToast(""))
+    //   }, 4000)
+    //   console.log(data)
+    //   handleShowListings()
+    // } catch (error) {
+    //   if (error instanceof Error) {
+    //     dispatch(createFailure(error.message))
+    //     setTimeout(() => {
+    //       dispatch(createFailure(""))
+    //     }, 4000)
+
+    //     dispatch(successToast(""))
+    //   } else {
+    //     console.error("Unexpected error:", error)
+    //   }
+    // }
   }
 
   const handleSongDelete = async (songId: string) => {
-    try {
-      const userConfirmed = window.confirm(
-        "Are you sure you want to delete this song?",
-      )
+    dispatch({ type: "FETCH_SONG_DELETE", payload: songId })
+    // try {
+    //   const userConfirmed = window.confirm(
+    //     "Are you sure you want to delete this song?",
+    //   )
 
-      if (!userConfirmed) {
-        return
-      }
+    //   if (!userConfirmed) {
+    //     return
+    //   }
 
-      const response = await fetch(`server/song/delete/${songId}`, {
-        method: "DELETE",
-      })
+    //   const response = await fetch(`server/song/delete/${songId}`, {
+    //     method: "DELETE",
+    //   })
 
-      if (!response.ok) {
-        const dataError = await response.json()
-        console.log(dataError.message)
-        return
-      }
+    //   if (!response.ok) {
+    //     const dataError = await response.json()
+    //     console.log(dataError.message)
+    //     return
+    //   }
 
-      const data: { success: boolean; message?: string } = await response.json()
+    //   const data: { success: boolean; message?: string } = await response.json()
 
-      if (data.success === false) {
-        console.log(data.message)
-        return
-      }
-      handleShowListings()
-    } catch (error) {
-      console.log((error as Error).message)
-    }
+    //   if (data.success === false) {
+    //     console.log(data.message)
+    //     return
+    //   }
+    //   handleShowListings()
+    // } catch (error) {
+    //   console.log((error as Error).message)
+    // }
   }
 
   const handleSongUpdate = async (songId: string) => {
-    dispatch(updateStart())
+    dispatch({ type: "FETCH_SONG_UPDATE", payload: songId })
+    // dispatch(updateStart())
 
-    const response = await fetch(`/server/song/get/${songId}`)
-    const data = await response.json()
-    if (data.success === false) {
-      dispatch(createFailure(data.message))
-      console.log(data.message)
-      return
-    }
-    setFormData(data)
+    // const response = await fetch(`/server/song/get/${songId}`)
+    // const data = await response.json()
+    // if (data.success === false) {
+    //   dispatch(createFailure(data.message))
+    //   console.log(data.message)
+    //   return
+    // }
+    // dispatch(setUpdateFormData(data))
+    // // setFormData(data)
 
-    dispatch(updateSuccess(songId))
+    // dispatch(updateSuccess(songId))
   }
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault()
-    try {
-      dispatch(createStart())
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      const res = await fetch(`/server/song/update/${updateData}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      })
-      const data = await res.json()
-      if (data.success === false) {
-        dispatch(createFailure(data.message))
-        setTimeout(() => {
-          dispatch(createFailure(""))
-        }, 4000)
-        return
-      }
+    dispatch({
+      type: "SONG_UPDATE",
+      payload: updateData,
+      secondPayload: formData,
+    })
+    // dispatch(updateReturn())
+    // navigate("/setting", { state: { formData } })
 
-      setFormData({
-        ...formData,
-        Title: "",
-        Artist: "",
-        Album: "",
-        Genre: "",
-      })
+    // try {
+    //   dispatch(createStart())
+    //   await new Promise((resolve) => setTimeout(resolve, 1000))
+    //   const res = await fetch(`/server/song/update/${updateData}`, {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(formData),
+    //   })
+    //   const data = await res.json()
+    //   if (data.success === false) {
+    //     dispatch(createFailure(data.message))
+    //     setTimeout(() => {
+    //       dispatch(createFailure(""))
+    //     }, 4000)
+    //     return
+    //   }
+    //   dispatch(
+    //     setFormData({
+    //       Title: "",
+    //       Artist: "",
+    //       Album: "",
+    //       Genre: "",
+    //     }),
+    //   )
+    //   // setFormData({
+    //   //   ...formData,
+    //   //   Title: "",
+    //   //   Artist: "",
+    //   //   Album: "",
+    //   //   Genre: "",
+    //   // })
 
-      dispatch(createSuccess(data))
+    //   dispatch(createSuccess(data))
 
-      handleShowListings()
-      dispatch(updateReturn())
+    //   handleShowListings()
+    //   dispatch(updateReturn())
 
-      navigate("/setting", { state: { formData } })
-    } catch (error) {
-      if (error instanceof Error) {
-        dispatch(createFailure(error.message))
-        setTimeout(() => {
-          dispatch(createFailure(""))
-        }, 4000)
+    //   navigate("/setting", { state: { formData } })
+    // } catch (error) {
+    //   if (error instanceof Error) {
+    //     dispatch(createFailure(error.message))
+    //     setTimeout(() => {
+    //       dispatch(createFailure(""))
+    //     }, 4000)
 
-        dispatch(successToast(""))
-      } else {
-        console.error("Unexpected error:", error)
-      }
-    }
+    //     dispatch(successToast(""))
+    //   } else {
+    //     console.error("Unexpected error:", error)
+    //   }
+    // }
   }
+
   const handleShowListings = async () => {
-    try {
-      dispatch(listingErrorStart())
-      const res = await fetch("/server/song/listings")
-      const data = await res.json()
-      if (data.success === false) {
-        dispatch(listingErrorSuccess())
+    dispatch({ type: "FETCH_SONG_LISTING" })
+    // try {
+    //   dispatch(listingErrorStart())
+    //   const res = await fetch("/server/song/listings")
+    //   const data = await res.json()
+    //   if (data.success === false) {
+    //     dispatch(listingErrorSuccess())
 
-        return
-      }
+    //     return
+    //   }
 
-      dispatch(listingSuccess(data))
-    } catch (error) {
-      dispatch(listingErrorSuccess())
-    }
+    //   dispatch(listingSuccess(data))
+    // } catch (error) {
+    //   dispatch(listingErrorSuccess())
+    // }
   }
 
   const onPageChange = (page: number) => {
