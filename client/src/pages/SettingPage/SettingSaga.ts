@@ -164,12 +164,11 @@ export function* fetchSongSubmit(action: {
 
     yield put(createSuccess(data))
     yield put(successToast(data))
+    yield call(fetchSongListing)
 
     yield delay(4000)
 
     yield put(successToast(""))
-
-    yield call(fetchSongListing)
   } catch (error) {
     if (error instanceof Error) {
       yield put(createFailure(error.message))
