@@ -11,7 +11,7 @@ interface Song {
   totalGenres: string
 }
 
-const TotalStat: React.FC = () => {
+const OverAllStat: React.FC = () => {
   const { showListingError, songListing } = useSelector(
     (state: RootState) => state.songs,
   )
@@ -21,56 +21,26 @@ const TotalStat: React.FC = () => {
     dispatch({ type: "FETCH_OVERALL_STATS" })
   }, [dispatch])
 
+  const song = songListing ? (songListing[0] as unknown as Song) : undefined
+
   return (
     <Flex flexWrap="wrap">
-      {songListing &&
-        songListing.map((song: Song) => (
-          <Flex
-            key={song.totalSongs}
-            flexDirection={["column", "row", "row"]}
-            mb={[3, 0, 0]}
-          >
+      <Heading
+        fontSize={[2, 3, 4]}
+        ml={5}
+        mt={4}
+        color="#606873"
+        fontFamily="Montserrat, sans-serif"
+        fontWeight="bold"
+        letterSpacing="0.05em"
+      >
+        MUSIC STATS OVERVIEW
+      </Heading>
+      {song && (
+        <Flex flexDirection={["column", "row", "row"]} mb={[3, 0, 0]}>
+          {["Songs", "Artists", "Albums", "Genres"].map((category) => (
             <Card
-              width={[200, 300, 400]}
-              m={4}
-              sx={{
-                boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.8)",
-                backgroundColor: "rgba(54, 69, 79, 0.4)",
-                borderRadius: 8,
-                overflow: "hidden",
-                display: "flex",
-                flexDirection: "row",
-              }}
-            >
-              <Image
-                src={StatImage}
-                alt="listing cover"
-                sx={{
-                  height: "auto",
-                  width: "50%",
-                  objectFit: "cover",
-                }}
-              />
-
-              <Flex
-                flexDirection="column"
-                justifyContent="space-between"
-                p={3}
-                flex={1}
-              >
-                <Text fontSize={[1, 2, 3]} fontWeight="bold">
-                  Songs:
-                </Text>
-                <Heading
-                  style={{ color: "rgba(255, 255, 255, 0.4)" }}
-                  fontSize={[4, 5, 6]}
-                  fontWeight="bold"
-                >
-                  {song.totalSongs}
-                </Heading>
-              </Flex>
-            </Card>
-            <Card
+              key={category}
               width={[200, 300, 400]}
               m={4}
               sx={{
@@ -99,104 +69,25 @@ const TotalStat: React.FC = () => {
                 flex={1}
               >
                 <Text fontSize={[1, 2, 3]} fontWeight="bold">
-                  Artists:
+                  {category}:
                 </Text>
                 <Heading
                   style={{ color: "rgba(255, 255, 255, 0.4)" }}
                   fontSize={[4, 5, 6]}
                   fontWeight="bold"
                 >
-                  {song.totalArtists}
+                  {song[`total${category}` as keyof Song]}
                 </Heading>
               </Flex>
             </Card>
-            <Card
-              width={[200, 300, 400]}
-              m={4}
-              sx={{
-                boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.8)",
-                backgroundColor: "rgba(54, 69, 79, 0.3)",
-                borderRadius: 8,
-                overflow: "hidden",
-                display: "flex",
-                flexDirection: "row",
-              }}
-            >
-              <Image
-                src={StatImage}
-                alt="listing cover"
-                sx={{
-                  height: "auto",
-                  width: "50%",
-                  objectFit: "cover",
-                }}
-              />
-
-              <Flex
-                flexDirection="column"
-                justifyContent="space-between"
-                p={3}
-                flex={1}
-              >
-                <Text fontSize={[1, 2, 3]} fontWeight="bold">
-                  Albums:
-                </Text>
-                <Heading
-                  style={{ color: "rgba(255, 255, 255, 0.4)" }}
-                  fontSize={[4, 5, 6]}
-                  fontWeight="bold"
-                >
-                  {song.totalAlbums}
-                </Heading>
-              </Flex>
-            </Card>
-            <Card
-              width={[200, 300, 400]}
-              m={4}
-              sx={{
-                boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.8)",
-                backgroundColor: "rgba(54, 69, 79, 0.3)",
-                borderRadius: 8,
-                overflow: "hidden",
-                display: "flex",
-                flexDirection: "row",
-              }}
-            >
-              <Image
-                src={StatImage}
-                alt="listing cover"
-                sx={{
-                  height: "auto",
-                  width: "50%",
-                  objectFit: "cover",
-                }}
-              />
-
-              <Flex
-                flexDirection="column"
-                justifyContent="space-between"
-                p={3}
-                flex={1}
-              >
-                <Text fontSize={[1, 2, 3]} fontWeight="bold">
-                  Genres:
-                </Text>
-                <Heading
-                  style={{ color: "rgba(255, 255, 255, 0.4)" }}
-                  fontSize={[4, 5, 6]}
-                  fontWeight="bold"
-                >
-                  {song.totalGenres}
-                </Heading>
-              </Flex>
-              <p style={{ color: "red" }}>
-                {showListingError ? "Error showing song lists" : ""}
-              </p>
-            </Card>
-          </Flex>
-        ))}
+          ))}
+          <p style={{ color: "red" }}>
+            {showListingError ? "Error showing song lists" : ""}
+          </p>
+        </Flex>
+      )}
     </Flex>
   )
 }
 
-export default TotalStat
+export default OverAllStat
