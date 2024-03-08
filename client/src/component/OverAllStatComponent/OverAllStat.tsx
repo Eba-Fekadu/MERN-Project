@@ -20,9 +20,11 @@ const OverAllStat: React.FC = () => {
   useEffect(() => {
     dispatch({ type: "FETCH_OVERALL_STATS" })
   }, [dispatch])
-
-  const song = songListing ? (songListing[0] as unknown as Song) : undefined
-
+  const song = songListing
+    ? songListing?.map((song: Song) => song)[0]
+    : undefined
+  // const song = songListing as unknown as Song | undefined
+  // const firstSong = songListing?.map((song: Song) => song)[0];
   return (
     <Flex flexWrap="wrap">
       <Heading
