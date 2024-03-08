@@ -14,6 +14,7 @@ Follow these steps to set up the project locally:
 
 Clone the repository:
 git clone https://github.com/Eba-Fekadu/MERN-Project.git
+deployed link: https://song-list-2nbb.onrender.com
 
 Navigate to the project directory:
 cd MERN-Project
